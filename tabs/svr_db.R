@@ -1,22 +1,22 @@
-output$map <- renderLeaflet({
-  leaflet() %>%
-    addTiles() %>% 
-    addScaleBar()
-})
-
 observeEvent(input$select_ws, {
   ws2map <- ws %>%
     filter(MERGE_SRC == input$select_ws)
   
-  leafletProxy("map", session) %>%
-    clearShapes() %>%
-    fitBounds(lng1 = unname(st_bbox(ws2map)$xmin),
-              lat1 = unname(st_bbox(ws2map)$ymin),
-              lng2 = unname(st_bbox(ws2map)$xmax),
-              lat2 = unname(st_bbox(ws2map)$ymax)
-    ) %>%
-    addPolygons(data = ws2map,
-                label = ~MERGE_SRC)
+  output$map <- renderLeaflet({
+    leaflet() %>%
+      addTiles() %>% 
+      addScaleBar() %>%
+      addResetMapButton() %>%
+      clearShapes() %>%
+      fitBounds(lng1 = unname(st_bbox(ws2map)$xmin),
+                lat1 = unname(st_bbox(ws2map)$ymin),
+                lng2 = unname(st_bbox(ws2map)$xmax),
+                lat2 = unname(st_bbox(ws2map)$ymax)
+      ) %>%
+      addPolygons(data = ws2map,
+                  label = ~MERGE_SRC)
+      
+  })
   
   output$pie <- renderPlotly({
     ws2pie <- ws_df %>%
