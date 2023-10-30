@@ -3,6 +3,7 @@ library(leaflet)
 library(leaflet.extras)
 library(plotly)
 library(sf)
+library(shiny)
 library(tidyr)
 
 ws <- st_read("data/watersheds_RFSA_4326.shp")
