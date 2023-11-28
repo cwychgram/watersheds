@@ -14,9 +14,70 @@ observeEvent(input$select_ws, {
                 lat2 = unname(st_bbox(ws2map)$ymax)
       ) %>%
       addPolygons(data = ws2map,
-                  label = ~MERGE_SRC)
+                  label = ~MERGE_SRC,
+                  color = "#000000", 
+                  opacity = 1,
+                  weight = 2, 
+                  fillOpacity = 0)
       
   })
+  
+  observeEvent(input$select_lulc, {
+    lulc_type <-  reactive({
+      lulc %>%
+        filter(LULC %in% input$select_lulc & CW %in% input$select_ws)  
+    })
+    
+    pal <- colorFactor(
+      palette = c("#397d49","#88B053","#e49635","#dfc35a","#c4281b","#a59b8f"),
+      domain = lulc$LULC,
+    )
+    
+    if(!is.null(input$select_lulc)) {
+      leafletProxy("map", session) %>%
+        clearGroup(group = "LULC") %>%
+        addPolygons(data = lulc_type(),
+                    label = ~LULC,
+                    color = ~pal(LULC),
+                    fillOpacity = 1,
+                    stroke = FALSE,
+                    group = "LULC")
+    } else {
+      leafletProxy("map", session) %>%
+        clearGroup(group = "LULC")
+    }
+    
+  }, ignoreNULL = FALSE)
+  
+  observeEvent(input$select_crop, {
+    crop_type <-  reactive({
+      crops %>%
+        filter(Crop %in% input$select_crop 
+               # & MERGE_SRC %in% input$select_ws
+               )  
+    })
+    
+    pal <- colorFactor(
+      palette = topo.colors(8),
+      domain = crops$Crop,
+    )
+    
+    if(!is.null(input$select_crop)) {
+      leafletProxy("map", session) %>%
+        clearGroup(group = "Crops") %>%
+        addCircleMarkers(data = crop_type(),
+                    label = ~Crop,
+                    radius = 5,
+                    color = ~pal(Crop),
+                    fillOpacity = 1,
+                    stroke = FALSE,
+                    group = "Crops")
+    } else {
+      leafletProxy("map", session) %>%
+        clearGroup(group = "Crops")
+    }
+    
+  }, ignoreNULL = FALSE)
   
   output$pie <- renderPlotly({
     ws2pie <- ws_df %>%
