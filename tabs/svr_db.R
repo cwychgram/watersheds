@@ -28,7 +28,7 @@ observeEvent(input$select_ws, {
         filter(LULC %in% input$select_lulc & CW %in% input$select_ws)  
     })
     
-    pal <- colorFactor(
+    pal_lulc <- colorFactor(
       palette = c("#397d49","#88B053","#e49635","#dfc35a","#c4281b","#a59b8f"),
       domain = lulc$LULC,
     )
@@ -36,15 +36,24 @@ observeEvent(input$select_ws, {
     if(!is.null(input$select_lulc)) {
       leafletProxy("map", session) %>%
         clearGroup(group = "LULC") %>%
+        removeControl(layerId = "LULCLegend") %>%
         addPolygons(data = lulc_type(),
                     label = ~LULC,
-                    color = ~pal(LULC),
+                    color = ~pal_lulc(LULC),
                     fillOpacity = 1,
                     stroke = FALSE,
-                    group = "LULC")
+                    group = "LULC") %>%
+        addLegend(position = "topright",
+                  pal = pal_lulc,
+                  values = lulc_type()$LULC,
+                  title = "LULC Type",
+                  opacity = 1,
+                  layerId = "LULCLegend"
+        )
     } else {
       leafletProxy("map", session) %>%
-        clearGroup(group = "LULC")
+        clearGroup(group = "LULC") %>%
+        removeControl(layerId = "LULCLegend")
     }
     
   }, ignoreNULL = FALSE)
@@ -57,7 +66,7 @@ observeEvent(input$select_ws, {
                )  
     })
     
-    pal <- colorFactor(
+    pal_crops <- colorFactor(
       palette = topo.colors(8),
       domain = crops$Crop,
     )
@@ -65,16 +74,25 @@ observeEvent(input$select_ws, {
     if(!is.null(input$select_crop)) {
       leafletProxy("map", session) %>%
         clearGroup(group = "Crops") %>%
+        removeControl(layerId = "CropLegend") %>%
         addCircleMarkers(data = crop_type(),
                     label = ~Crop,
                     radius = 5,
-                    color = ~pal(Crop),
+                    color = ~pal_crops(Crop),
                     fillOpacity = 1,
                     stroke = FALSE,
-                    group = "Crops")
+                    group = "Crops") %>%
+        addLegend(position = "topright",
+                  pal = pal_crops,
+                  values = crop_type()$Crop,
+                  title = "Crop Type",
+                  opacity = 1,
+                  layerId = "CropLegend"
+        )
     } else {
       leafletProxy("map", session) %>%
-        clearGroup(group = "Crops")
+        clearGroup(group = "Crops") %>%
+        removeControl(layerId = "CropLegend")
     }
     
   }, ignoreNULL = FALSE)
