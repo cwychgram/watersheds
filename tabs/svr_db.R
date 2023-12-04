@@ -25,7 +25,7 @@ observeEvent(input$select_ws, {
   observeEvent(input$select_lulc, {
     lulc_type <-  reactive({
       lulc %>%
-        filter(LULC %in% input$select_lulc & CW %in% input$select_ws)  
+        filter(LULC %in% input$select_lulc & CW %in% input$select_ws)
     })
     
     pal_lulc <- colorFactor(
@@ -33,7 +33,7 @@ observeEvent(input$select_ws, {
       domain = lulc$LULC,
     )
     
-    if(!is.null(input$select_lulc)) {
+    if(!is.null(input$select_lulc) & nrow(lulc_type()) > 0) {
       leafletProxy("map", session) %>%
         clearGroup(group = "LULC") %>%
         removeControl(layerId = "LULCLegend") %>%
