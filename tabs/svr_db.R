@@ -71,7 +71,7 @@ observeEvent(input$select_ws, {
       domain = crops$Crop,
     )
     
-    if(!is.null(input$select_crop)) {
+    if(!is.null(input$select_crop) & nrow(crop_type()) > 0) {
       leafletProxy("map", session) %>%
         clearGroup(group = "Crops") %>%
         removeControl(layerId = "CropLegend") %>%
