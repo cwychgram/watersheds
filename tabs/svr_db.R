@@ -31,72 +31,86 @@ observe({
                     choices = sort(ws_choices()))
 })
 
-observeEvent(input$select_ws, {
+observe({
   agro <- ws$AGRO[ws$WATERSHED == input$select_ws]
-  if (agro == "Lowland") {
-    output$select_mo_opt <- renderUI({
-      radioButtons("select_mo",
-                   label = "Select a month:",
-                   choices = c("April", "October"),
-                   selected = "April",
-                   width = "100%",
-                   inline = TRUE)
-    })
-  } else if (agro == "Midland") {
-    output$select_mo_opt <- renderUI({
-      radioButtons("select_mo",
-                   label = "Select a month:",
-                   choices = c("June", "November"),
-                   selected = "June",
-                   width = "100%",
-                   inline = TRUE)
-    })
+  if (length(agro) != 0) {
+    if (agro == "Lowland") {
+      updateRadioButtons(session, "select_mo",
+                         choices = c("April", "October"),
+                         inline = TRUE
+      )
+    } else if (agro == "Midland") {
+      updateRadioButtons(session, "select_mo",
+                         choices = c("June", "November"),
+                         inline = TRUE
+      )
+    } else {
+      updateRadioButtons(session, "select_mo",
+                         choices = c("June", "December"),
+                         inline = TRUE
+      )
+    }
   } else {
-    output$select_mo_opt <- renderUI({
-      radioButtons("select_mo",
-                   label = "Select a month:",
-                   choices = c("June", "December"),
-                   selected = "June",
-                   width = "100%",
-                   inline = TRUE)
-    })
-  }
-  output$ws_name <- renderText({ 
+  } 
+})
+
+observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
+  output$ws_name <- renderText({
     if(input$select_ws != "No watersheds!") {
       if (input$select_ws == "Ali-Elemo (Chinakson)") {
-        paste("Chinakson Ali-Elemo")
+        paste("Chinakson Ali-Elemo (Midland)")
       } else if (input$select_ws == "Ali-Elemo (Jarso)") {
-        print("Jarso Ali-Elemo")
+        paste("Jarso Ali-Elemo (Lowland)")
       } else if (input$select_ws == "Urji (Chinakson)") {
-        print("Chinakson Urji")
+        paste("Chinakson Urji (Midland)")
       } else if (input$select_ws == "Urji (Midhega Tola)") {
-        print("Midhega Tola Urji")
+        paste("Midhega Tola Urji (Lowland)")
       } else {
-        woreda <- ws$WOREDA[ws$WATERSHED == input$select_ws]
-        paste(woreda, input$select_ws)
+        paste(ws$WOREDA[ws$WATERSHED == input$select_ws], 
+              " ",
+              input$select_ws,
+              " ",
+              "(",
+              ws$AGRO[ws$WATERSHED == input$select_ws],
+              ")",
+              sep = ""
+              )
       }
     } else {
       paste("No watershed selected.")
     }
   })
-  ws2map <- ws %>%
-    filter(WATERSHED == input$select_ws)
-  if (nrow(ws2map) != 0) {
+  if (input$select_ws == "No watersheds!") {
     output$map_lc <- renderLeaflet({
       leaflet() %>%
-        addProviderTiles(providers$CartoDB.Positron) %>% 
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addScaleBar() %>%
         addResetMapButton() %>%
         clearShapes() %>%
-        fitBounds(lng1 = unname(st_bbox(ws2map)$xmin),
-                  lat1 = unname(st_bbox(ws2map)$ymin),
-                  lng2 = unname(st_bbox(ws2map)$xmax),
-                  lat2 = unname(st_bbox(ws2map)$ymax)
+        fitBounds(lng1 = unname(st_bbox(ws)$xmin),
+                  lat1 = unname(st_bbox(ws)$ymin),
+                  lng2 = unname(st_bbox(ws)$xmax),
+                  lat2 = unname(st_bbox(ws)$ymax)
         )
     })
     output$map_ndvi <- renderLeaflet({
       leaflet() %>%
-        addProviderTiles(providers$CartoDB.Positron) %>% 
+        addProviderTiles(providers$CartoDB.Positron) %>%
+        addScaleBar() %>%
+        addResetMapButton() %>%
+        clearShapes() %>%
+        fitBounds(lng1 = unname(st_bbox(ws)$xmin),
+                  lat1 = unname(st_bbox(ws)$ymin),
+                  lng2 = unname(st_bbox(ws)$xmax),
+                  lat2 = unname(st_bbox(ws)$ymax)
+        )
+    })
+  } else {
+    ws2map <- ws %>%
+      filter(WATERSHED == input$select_ws)
+    output$map_lc <- renderLeaflet({
+      leaflet() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         addScaleBar() %>%
         addResetMapButton() %>%
         clearShapes() %>%
@@ -104,13 +118,71 @@ observeEvent(input$select_ws, {
                   lat1 = unname(st_bbox(ws2map)$ymin),
                   lng2 = unname(st_bbox(ws2map)$xmax),
                   lat2 = unname(st_bbox(ws2map)$ymax)
+        ) %>%
+        addPolygons(
+          data = ws2map,
+          color = "#1a242f",
+          stroke = TRUE,
+          weight = 2.0,
+          smoothFactor = 1,
+          opacity = 1.0,
+          fillOpacity = 0.0,
+          fillColor = NA,
         )
     })
-  } else {
-    # showModal(modalDialog(
-    #   "No watersheds!",
-    #   size = "s",
-    #   easyClose = TRUE
-    # )) 
+    output$map_ndvi <- renderLeaflet({
+      leaflet() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
+        addScaleBar() %>%
+        addResetMapButton() %>%
+        clearShapes() %>%
+        fitBounds(lng1 = unname(st_bbox(ws2map)$xmin),
+                  lat1 = unname(st_bbox(ws2map)$ymin),
+                  lng2 = unname(st_bbox(ws2map)$xmax),
+                  lat2 = unname(st_bbox(ws2map)$ymax)
+        ) %>%
+        addPolygons(
+          data = ws2map,
+          color = "#1a242f",
+          stroke = TRUE,
+          weight = 2.0,
+          smoothFactor = 1,
+          opacity = 1.0,
+          fillOpacity = 0.0,
+          fillColor = NA,
+        )
+    })
+    wsname <- ws$WSNAME[ws$WATERSHED == input$select_ws]
+    month <- input$select_mo
+    month[month == "April"] <- 4
+    month[month == "June"] <- 6
+    month[month == "October"] <- 10
+    month[month == "November"] <- 11
+    month[month == "December"] <- 12
+    
+    ndvi_filenames <- ndvi_filenames %>%
+      filter(WSNAME == wsname,
+             MONTHNUM == month,
+             YEAR == input$select_yr)
+    if (nrow(ndvi_filenames) != 0) {
+      ndvi_tif <- paste("data/ndvi/", ndvi_filenames$FILENAME, sep = "")
+      ndvi2map <- read_stars(ndvi_tif)
+      pal_ndvi <- colorNumeric(palette = "Greens",
+                               na.color = "transparent",
+                               domain = ndvi2map[[1]])
+      leafletProxy("map_ndvi", session) %>%
+        clearGroup(group = "NDVI") %>%
+        removeControl(layerId = "NDVI_legend") %>%
+        addStarsImage(ndvi2map, colors = pal_ndvi, group = "NDVI") %>%
+        leaflet::addLegend(pal = pal_ndvi,
+                           values = ndvi2map[[1]],
+                           opacity = 1,
+                           title = "NDVI",
+                           layerId = "NDVI_legend")
+    } else {
+      leafletProxy("map_ndvi", session) %>%
+        clearGroup(group = "NDVI") %>%
+        removeControl(layerId = "NDVI_legend")
+    }
   }
 }, ignoreInit = TRUE)

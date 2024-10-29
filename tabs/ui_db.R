@@ -35,7 +35,16 @@ ui_db <- fluidPage(
                       grid = TRUE,
                       width = "100%"
       ),
-      uiOutput("select_mo_opt")
+      # uiOutput("select_mo_opt")
+      radioButtons("select_mo",
+                   label = "Select a month:",
+                   choices = c("April",
+                               "June", 
+                               "October",
+                               "November",
+                               "December"),
+                   width = "100%",
+                   inline = TRUE),
     ),
     mainPanel(
       width = 9,
