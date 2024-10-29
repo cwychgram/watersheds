@@ -1,0 +1,45 @@
+@font-face { 
+  src: url(fonts/Gentona/GentonaBook.otf);
+  font-family: Gentona-Book; 
+}
+
+* {
+  font-family: Gentona-Book;
+}
+
+h4 {
+  font-size: 19px;
+}
+
+h5 {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.irs-grid-pol.small {
+  height: 0px;
+}
+
+tfoot {
+  visibility: hidden;
+}
+
+.well {
+  padding: 15px;
+}
+
+hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-top: 1px solid #18bc9c;
+}
+
+.irs--shiny .irs-min, 
+.irs--shiny .irs-max,
+.irs--shiny .irs-from, 
+.irs--shiny .irs-to, 
+.irs--shiny .irs-single,
+.irs-grid-text {
+  font-size: 12px;
+  line-height: 1;
+}
