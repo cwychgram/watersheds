@@ -10,6 +10,7 @@ output$map_loc <- renderLeaflet({
     addPolygons(
       data = ws,
       label = paste(ws$WOREDA, ws$WATERSHED, sep = " "),
+      labelOptions = labelOptions(textsize = "15px"),
       color = "#1a242f",
       stroke = TRUE,
       weight = 0.25,
@@ -155,6 +156,7 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
       addPolygons(
         data = ws2map,
         label = paste(ws2map$WOREDA, ws2map$WATERSHED, sep = " "),
+        labelOptions = labelOptions(textsize = "15px"),
         color = "#1a242f",
         stroke = TRUE,
         weight = 0.25,
