@@ -128,6 +128,8 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
         addScaleBar() %>%
         addResetMapButton() %>%
         clearShapes() %>%
+        clearGroup(group = "NDVI") %>%
+        removeControl(layerId = "NDVI_legend") %>%
         fitBounds(lng1 = unname(st_bbox(ws)$xmin),
                   lat1 = unname(st_bbox(ws)$ymin),
                   lng2 = unname(st_bbox(ws)$xmax),
@@ -184,6 +186,8 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
         addScaleBar() %>%
         addResetMapButton() %>%
         clearShapes() %>%
+        clearGroup(group = "NDVI") %>%
+        removeControl(layerId = "NDVI_legend") %>%
         fitBounds(lng1 = unname(st_bbox(ws2map)$xmin),
                   lat1 = unname(st_bbox(ws2map)$ymin),
                   lng2 = unname(st_bbox(ws2map)$xmax),
