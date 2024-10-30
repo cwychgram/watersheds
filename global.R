@@ -19,4 +19,6 @@ ws$WATERSHED[ws$WATERSHED == "Ali-Elemo" & ws$WOREDA == "Jarso"] <- "Ali-Elemo (
 ws$WATERSHED[ws$WATERSHED == "Urji" & ws$WOREDA == "Chinakson"] <- "Urji (Chinakson)"
 ws$WATERSHED[ws$WATERSHED == "Urji" & ws$WOREDA == "Midhega Tola"] <- "Urji (Midhega Tola)"
 
+lc_filenames <- read.csv("data/lc_filenames.csv")
+
 ndvi_filenames <- read.csv("data/ndvi_filenames.csv")

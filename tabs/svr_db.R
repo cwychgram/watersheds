@@ -80,19 +80,21 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
   output$ws_name <- renderText({
     if(input$select_ws != "No watersheds!") {
       if (input$select_ws == "Ali-Elemo (Chinakson)") {
-        paste("Chinakson Ali-Elemo (Midland)")
+        paste("Chinakson Ali-Elemo (Learning - Midland)")
       } else if (input$select_ws == "Ali-Elemo (Jarso)") {
-        paste("Jarso Ali-Elemo (Lowland)")
+        paste("Jarso Ali-Elemo (Learning - Lowland)")
       } else if (input$select_ws == "Urji (Chinakson)") {
-        paste("Chinakson Urji (Midland)")
+        paste("Chinakson Urji (Learning - Midland)")
       } else if (input$select_ws == "Urji (Midhega Tola)") {
-        paste("Midhega Tola Urji (Lowland)")
+        paste("Midhega Tola Urji (Control - Lowland)")
       } else {
         paste(ws$WOREDA[ws$WATERSHED == input$select_ws], 
               " ",
               input$select_ws,
               " ",
               "(",
+              ws$TYPE[ws$WATERSHED == input$select_ws],
+              " - ",
               ws$AGRO[ws$WATERSHED == input$select_ws],
               ")",
               sep = ""
@@ -116,6 +118,8 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
         addScaleBar() %>%
         addResetMapButton() %>%
         clearShapes() %>%
+        clearGroup(group = "LC") %>%
+        removeControl(layerId = "LC_legend") %>%
         fitBounds(lng1 = unname(st_bbox(ws)$xmin),
                   lat1 = unname(st_bbox(ws)$ymin),
                   lng2 = unname(st_bbox(ws)$xmax),
@@ -155,7 +159,7 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
         smoothFactor = 1,
         opacity = 1.0,
         fillOpacity = 1.0,
-        fillColor = "#1a242f",
+        fillColor = "#e74c3c",
         group = "selected_ws"
       )
     output$map_lc <- renderLeaflet({
@@ -164,6 +168,8 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
         addScaleBar() %>%
         addResetMapButton() %>%
         clearShapes() %>%
+        clearGroup(group = "LC") %>%
+        removeControl(layerId = "LC_legend") %>%
         fitBounds(lng1 = unname(st_bbox(ws2map)$xmin),
                   lat1 = unname(st_bbox(ws2map)$ymin),
                   lng2 = unname(st_bbox(ws2map)$xmax),
@@ -212,6 +218,35 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
     month[month == "November"] <- 11
     month[month == "December"] <- 12
     
+    lc_filenames <- lc_filenames %>%
+      filter(WSNAME == wsname,
+             MONTHNUM == month,
+             YEAR == input$select_yr)
+    if (nrow(lc_filenames) != 0) {
+      lc_tif <- paste("data/lc/", lc_filenames$FILENAME, sep = "")
+      lc2map <- read_stars(lc_tif)
+      pal_lulc <- colorFactor(
+        palette = c("#397d49", "#e49635", "#dfc35a", "#c4281b", "#a59b8f"),
+        levels = c(1, 3, 4, 5, 6),
+        na.color = "transparent",
+        domain = lc2map[[1]]
+      )
+      leafletProxy("map_lc", session) %>%
+        clearGroup(group = "LC") %>%
+        removeControl(layerId = "LC_legend") %>%
+        addStarsImage(lc2map, colors = pal_lulc, group = "LC") %>%
+        leaflet::addLegend(colors = c("#397d49", "#e49635", "#dfc35a", "#c4281b", "#a59b8f"),
+                           labels = c("Trees", "Crops", "Shrub/Scrub", "Built", "Bare"),
+                           opacity = 1,
+                           position = "bottomright",
+                           title = "Land Cover",
+                           layerId = "LC_legend")
+    } else {
+      leafletProxy("map_lc", session) %>%
+        clearGroup(group = "LC") %>%
+        removeControl(layerId = "LC_legend")
+    }
+    
     ndvi_filenames <- ndvi_filenames %>%
       filter(WSNAME == wsname,
              MONTHNUM == month,
@@ -229,6 +264,7 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
         leaflet::addLegend(pal = pal_ndvi,
                            values = ndvi2map[[1]],
                            opacity = 1,
+                           position = "bottomright",
                            title = "NDVI",
                            layerId = "NDVI_legend")
     } else {
