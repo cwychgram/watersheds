@@ -1,3 +1,25 @@
+output$map_loc <- renderLeaflet({
+  leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
+    addProviderTiles(providers$CartoDB.Positron) %>%
+    clearGroup("selected_ws") %>%
+    fitBounds(lng1 = unname(st_bbox(ws)$xmin),
+              lat1 = unname(st_bbox(ws)$ymin),
+              lng2 = unname(st_bbox(ws)$xmax),
+              lat2 = unname(st_bbox(ws)$ymax)
+    ) %>%
+    addPolygons(
+      data = ws,
+      label = paste(ws$WOREDA, ws$WATERSHED, sep = " "),
+      color = "#1a242f",
+      stroke = FALSE,
+      weight = 1.0,
+      smoothFactor = 1,
+      opacity = 1.0,
+      fillOpacity = 1.0,
+      fillColor = "#18bc9c",
+    )
+})
+
 ws_choices <- reactive({
   if (input$select_type == "All") {
     ws <- ws
@@ -74,13 +96,20 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
               ws$AGRO[ws$WATERSHED == input$select_ws],
               ")",
               sep = ""
-              )
+        )
       }
     } else {
       paste("No watershed selected.")
     }
   })
   if (input$select_ws == "No watersheds!") {
+    leafletProxy("map_loc", session) %>%
+      clearGroup("selected_ws") %>%
+      fitBounds(lng1 = unname(st_bbox(ws)$xmin),
+                lat1 = unname(st_bbox(ws)$ymin),
+                lng2 = unname(st_bbox(ws)$xmax),
+                lat2 = unname(st_bbox(ws)$ymax)
+      ) 
     output$map_lc <- renderLeaflet({
       leaflet() %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
@@ -108,6 +137,25 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
   } else {
     ws2map <- ws %>%
       filter(WATERSHED == input$select_ws)
+    leafletProxy("map_loc", session) %>%
+      clearGroup("selected_ws") %>%
+      fitBounds(lng1 = unname(st_bbox(ws)$xmin),
+                lat1 = unname(st_bbox(ws)$ymin),
+                lng2 = unname(st_bbox(ws)$xmax),
+                lat2 = unname(st_bbox(ws)$ymax)
+      ) %>%
+      addPolygons(
+        data = ws2map,
+        label = paste(ws2map$WOREDA, ws2map$WATERSHED, sep = " "),
+        color = "#1a242f",
+        stroke = FALSE,
+        weight = 1,
+        smoothFactor = 1,
+        opacity = 1.0,
+        fillOpacity = 1.0,
+        fillColor = "#1a242f",
+        group = "selected_ws"
+      )
     output$map_lc <- renderLeaflet({
       leaflet() %>%
         addProviderTiles(providers$CartoDB.Positron) %>%
