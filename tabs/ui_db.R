@@ -45,6 +45,7 @@ ui_db <- fluidPage(
                    width = "100%",
                    inline = TRUE
       ),
+      h5("Study Area"),
       leafletOutput("map_loc",
                     width = "100%",
                     height = 200)

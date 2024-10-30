@@ -11,8 +11,8 @@ output$map_loc <- renderLeaflet({
       data = ws,
       label = paste(ws$WOREDA, ws$WATERSHED, sep = " "),
       color = "#1a242f",
-      stroke = FALSE,
-      weight = 1.0,
+      stroke = TRUE,
+      weight = 0.25,
       smoothFactor = 1,
       opacity = 1.0,
       fillOpacity = 1.0,
@@ -143,19 +143,21 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
   } else {
     ws2map <- ws %>%
       filter(WATERSHED == input$select_ws)
+    lng <- as.numeric(st_coordinates(st_centroid(ws2map))[ , 1])
+    lat <- as.numeric(st_coordinates(st_centroid(ws2map))[ , 2])
     leafletProxy("map_loc", session) %>%
       clearGroup("selected_ws") %>%
-      fitBounds(lng1 = unname(st_bbox(ws)$xmin),
-                lat1 = unname(st_bbox(ws)$ymin),
-                lng2 = unname(st_bbox(ws)$xmax),
-                lat2 = unname(st_bbox(ws)$ymax)
-      ) %>%
+      setView(
+        lng, 
+        lat,
+        zoom = 9
+        ) %>%
       addPolygons(
         data = ws2map,
         label = paste(ws2map$WOREDA, ws2map$WATERSHED, sep = " "),
         color = "#1a242f",
-        stroke = FALSE,
-        weight = 1,
+        stroke = TRUE,
+        weight = 0.25,
         smoothFactor = 1,
         opacity = 1.0,
         fillOpacity = 1.0,
@@ -226,7 +228,7 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
       lc_tif <- paste("data/lc/", lc_filenames$FILENAME, sep = "")
       lc2map <- read_stars(lc_tif)
       pal_lulc <- colorFactor(
-        palette = c("#397d49", "#e49635", "#dfc35a", "#c4281b", "#a59b8f"),
+        palette = c("#38814e", "#e49635", "#dfc35a", "#b50000", "#d2cdc0"),
         levels = c(1, 3, 4, 5, 6),
         na.color = "transparent",
         domain = lc2map[[1]]
@@ -235,7 +237,7 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
         clearGroup(group = "LC") %>%
         removeControl(layerId = "LC_legend") %>%
         addStarsImage(lc2map, colors = pal_lulc, group = "LC") %>%
-        leaflet::addLegend(colors = c("#397d49", "#e49635", "#dfc35a", "#c4281b", "#a59b8f"),
+        leaflet::addLegend(colors = c("#38814e", "#e49635", "#dfc35a", "#b50000", "#d2cdc0"),
                            labels = c("Trees", "Crops", "Shrub/Scrub", "Built", "Bare"),
                            opacity = 1,
                            position = "bottomright",
