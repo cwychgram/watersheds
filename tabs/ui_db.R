@@ -71,17 +71,17 @@ ui_db <- fluidPage(
         column(
           width = 4,
           h5("Vegetation"),
-          plotOutput("plot_lc")
+          echarts4rOutput("plot_veg")
         ),
         column(
           width = 4,
           h5("NDVI"),
-          plotOutput("plot_ndvi")
+          echarts4rOutput("plot_ndvi")
         ),
         column(
           width = 4,
           h5("Rainfall"),
-          plotOutput("plot_rain")
+          echarts4rOutput("plot_rain")
         )
       )
     )

@@ -187,7 +187,7 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
           smoothFactor = 1,
           opacity = 1.0,
           fillOpacity = 0.0,
-          fillColor = NA,
+          fillColor = NA
         )
     })
     output$map_ndvi <- renderLeaflet({
@@ -282,32 +282,149 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
 observeEvent(input$select_ws, {
   if (input$select_ws != "No watersheds!") {
     ws2plot <- df %>%
-      filter(WATERSHED == input$select_ws)
+      filter(WATERSHED == input$select_ws,
+             YEAR > 2017) 
     if (unique(ws2plot$AGRO) == "Lowland") {
       ws2plot <- ws2plot %>%
         filter(MONTHNAME %in% c("April", "October"))
+      min_mo <- "April"
+      max_mo <- "October"
     } else if (unique(ws2plot$AGRO) == "Midland") {
       ws2plot <- ws2plot %>%
         filter(MONTHNAME %in% c("June", "November"))
+      min_mo <- "June"
+      max_mo <- "November"
     } else {
       ws2plot <- ws2plot %>%
         filter(MONTHNAME %in% c("June", "December"))
+      min_mo <- "June"
+      max_mo <- "December"
     }
-    min_mo <- ws2plot$MONTHNAME[min(ws2plot$MONTHNUM)]
-    max_mo <- ws2plot$MONTHNAME[max(ws2plot$MONTHNUM)]
-    output$plot_lc<-renderPlot({
-      ws2plot %>%
-        ggplot(aes(x = YEAR, y = VEGETATION_PCT, fill = MONTHNAME, width = .5)) +
-        geom_bar(stat = "identity", position=position_dodge(), color = "black") +
-        ylim(0, 100) +
-        labs(
-          x = "Year", y = "Vegetation Cover (%)", fill = "") +
-        scale_fill_manual(labels = c(min_mo, max_mo), values = c("#44aa99","#ddcc77")) +
-        theme_classic(text = element_text(size = 15, family = "Gentona Book")) +
-        theme(plot.title = element_text(hjust = 0.5),
-              axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
-              axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
-              legend.position = "bottom")
+    output$plot_veg <- renderEcharts4r({
+      veg <- ws2plot %>%
+        dplyr::select(YEAR, MONTHNAME, VEGETATION_PCT) %>%
+        mutate(VEGETATION_PCT = round(VEGETATION_PCT, 2)) %>%
+        pivot_wider(names_from = MONTHNAME, values_from = VEGETATION_PCT) %>%
+        mutate(YEAR = as.factor(YEAR),
+               mo_1 = .[[2]],
+               mo_2 = .[[3]]) 
+      veg %>%
+        e_charts(YEAR) %>%
+        e_bar(mo_1,
+              name = min_mo) %>%
+        e_bar(mo_2,
+              name = max_mo) %>%
+        e_x_axis(
+          name = "Year",
+          nameLocation = "center",
+          nameGap = 28,
+          axisLine = list(lineStyle = list(color = "#2c3e50"))) %>%
+        e_y_axis(
+          name = "Vegetation Cover (%)",
+          nameLocation = "center",
+          nameGap = 35,
+          splitLine = list(lineStyle = list(color = "#ecf0f1"))) %>%
+        e_color(
+          c("#f7bf65", "#7bbce8")
+        ) %>%
+        e_text_style(
+          color = "#2c3e50",
+          fontFamily = "Gentona-Book",
+          fontSize = 15
+        ) %>%
+        e_tooltip(trigger = "axis",
+                  textStyle = list(color = "#2c3e50",
+                                   fontFamily = "Gentona-Book")
+        ) %>%
+        e_legend(textStyle = list(color = "#2c3e50",
+                                  fontFamily = "Gentona-Book",
+                                  fontSize = 15)) %>%
+        e_grid(left = "20%") %>%
+        e_axis_pointer(lineStyle = list(color = "#bac4c5"))
+    })
+    output$plot_ndvi <- renderEcharts4r({
+      ndvi <- ws2plot %>%
+        dplyr::select(YEAR, MONTHNAME, NDVI_MEAN) %>%
+        mutate(NDVI_MEAN = round(NDVI_MEAN, 2)) %>%
+        pivot_wider(names_from = MONTHNAME, values_from = NDVI_MEAN) %>%
+        mutate(YEAR = as.factor(YEAR),
+               mo_1 = .[[2]],
+               mo_2 = .[[3]]) 
+      ndvi %>%
+        e_charts(YEAR) %>%
+        e_bar(mo_1,
+              name = min_mo) %>%
+        e_bar(mo_2,
+              name = max_mo) %>%
+        e_x_axis(
+          name = "Year",
+          nameLocation = "center",
+          nameGap = 28,
+          axisLine = list(lineStyle = list(color = "#2c3e50"))) %>%
+        e_y_axis(
+          name = "NDVI",
+          nameLocation = "center",
+          nameGap = 35,
+          splitLine = list(lineStyle = list(color = "#ecf0f1"))) %>%
+        e_color(
+          c("#f7bf65", "#7bbce8")
+        ) %>%
+        e_text_style(
+          color = "#2c3e50",
+          fontFamily = "Gentona-Book",
+          fontSize = 15
+        ) %>%
+        e_tooltip(trigger = "axis",
+                  textStyle = list(color = "#2c3e50",
+                                   fontFamily = "Gentona-Book")
+        ) %>%
+        e_legend(textStyle = list(color = "#2c3e50",
+                                  fontFamily = "Gentona-Book",
+                                  fontSize = 15)) %>%
+        e_grid(left = "20%") %>%
+        e_axis_pointer(lineStyle = list(color = "#bac4c5"))
+    })
+    output$plot_rain <- renderEcharts4r({
+      rain <- ws2plot %>%
+        dplyr::select(YEAR, MONTHNAME, PRECIP_MEAN) %>%
+        mutate(PRECIP_MEAN = round(PRECIP_MEAN, 2)) %>%
+        pivot_wider(names_from = MONTHNAME, values_from = PRECIP_MEAN) %>%
+        mutate(YEAR = as.factor(YEAR),
+               mo_1 = .[[2]],
+               mo_2 = .[[3]]) 
+      rain %>%
+        e_charts(YEAR) %>%
+        e_bar(mo_1,
+              name = min_mo) %>%
+        e_bar(mo_2,
+              name = max_mo) %>%
+        e_x_axis(
+          name = "Year",
+          nameLocation = "center",
+          nameGap = 28,
+          axisLine = list(lineStyle = list(color = "#2c3e50"))) %>%
+        e_y_axis(
+          name = "Rainfall (mm)",
+          nameLocation = "center",
+          nameGap = 35,
+          splitLine = list(lineStyle = list(color = "#ecf0f1"))) %>%
+        e_color(
+          c("#f7bf65", "#7bbce8")
+        ) %>%
+        e_text_style(
+          color = "#2c3e50",
+          fontFamily = "Gentona-Book",
+          fontSize = 15
+        ) %>%
+        e_tooltip(trigger = "axis",
+                  textStyle = list(color = "#2c3e50",
+                                   fontFamily = "Gentona-Book")
+        ) %>%
+        e_legend(textStyle = list(color = "#2c3e50",
+                                  fontFamily = "Gentona-Book",
+                                  fontSize = 15)) %>%
+        e_grid(left = "20%") %>%
+        e_axis_pointer(lineStyle = list(color = "#bac4c5"))
     })
   } else {
   }

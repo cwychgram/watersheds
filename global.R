@@ -1,6 +1,5 @@
 library(dplyr)
 library(echarts4r)
-library(ggplot2)
 library(leafem)
 library(leaflet)
 library(leaflet.extras)
@@ -11,6 +10,7 @@ library(shinythemes)
 library(shinyWidgets)
 library(stars)
 library(stringr)
+library(tidyr)
 
 ws <- st_read("data/ws.shp")
 # ws$WATERSHED[duplicated(ws$WATERSHED) == TRUE]
