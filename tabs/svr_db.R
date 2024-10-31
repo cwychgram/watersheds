@@ -278,3 +278,37 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
     }
   }
 }, ignoreInit = TRUE)
+
+observeEvent(input$select_ws, {
+  if (input$select_ws != "No watersheds!") {
+    ws2plot <- df %>%
+      filter(WATERSHED == input$select_ws)
+    if (unique(ws2plot$AGRO) == "Lowland") {
+      ws2plot <- ws2plot %>%
+        filter(MONTHNAME %in% c("April", "October"))
+    } else if (unique(ws2plot$AGRO) == "Midland") {
+      ws2plot <- ws2plot %>%
+        filter(MONTHNAME %in% c("June", "November"))
+    } else {
+      ws2plot <- ws2plot %>%
+        filter(MONTHNAME %in% c("June", "December"))
+    }
+    min_mo <- ws2plot$MONTHNAME[min(ws2plot$MONTHNUM)]
+    max_mo <- ws2plot$MONTHNAME[max(ws2plot$MONTHNUM)]
+    output$plot_lc<-renderPlot({
+      ws2plot %>%
+        ggplot(aes(x = YEAR, y = VEGETATION_PCT, fill = MONTHNAME, width = .5)) +
+        geom_bar(stat = "identity", position=position_dodge(), color = "black") +
+        ylim(0, 100) +
+        labs(
+          x = "Year", y = "Vegetation Cover (%)", fill = "") +
+        scale_fill_manual(labels = c(min_mo, max_mo), values = c("#44aa99","#ddcc77")) +
+        theme_classic(text = element_text(size = 15, family = "Gentona Book")) +
+        theme(plot.title = element_text(hjust = 0.5),
+              axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+              axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+              legend.position = "bottom")
+    })
+  } else {
+  }
+}, ignoreInit = TRUE)

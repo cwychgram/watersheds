@@ -1,4 +1,6 @@
 library(dplyr)
+library(echarts4r)
+library(ggplot2)
 library(leafem)
 library(leaflet)
 library(leaflet.extras)
@@ -22,3 +24,9 @@ ws$WATERSHED[ws$WATERSHED == "Urji" & ws$WOREDA == "Midhega Tola"] <- "Urji (Mid
 lc_filenames <- read.csv("data/lc_filenames.csv")
 
 ndvi_filenames <- read.csv("data/ndvi_filenames.csv")
+
+df <- read.csv("data/final_data_20unclass.csv")
+df$WATERSHED[df$WATERSHED == "Ali-Elemo" & df$WOREDA == "Chinakson"] <- "Ali-Elemo (Chinakson)"
+df$WATERSHED[df$WATERSHED == "Ali-Elemo" & df$WOREDA == "Jarso"] <- "Ali-Elemo (Jarso)"
+df$WATERSHED[df$WATERSHED == "Urji" & df$WOREDA == "Chinakson"] <- "Urji (Chinakson)"
+df$WATERSHED[df$WATERSHED == "Urji" & df$WOREDA == "Midhega Tola"] <- "Urji (Midhega Tola)"

@@ -65,6 +65,24 @@ ui_db <- fluidPage(
           h5("NDVI"),
           leafletOutput("map_ndvi")
         ),
+      ),
+      hr(),
+      fluidRow(
+        column(
+          width = 4,
+          h5("Vegetation"),
+          plotOutput("plot_lc")
+        ),
+        column(
+          width = 4,
+          h5("NDVI"),
+          plotOutput("plot_ndvi")
+        ),
+        column(
+          width = 4,
+          h5("Rainfall"),
+          plotOutput("plot_rain")
+        )
       )
     )
   )

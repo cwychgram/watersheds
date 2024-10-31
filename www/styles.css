@@ -40,8 +40,8 @@ hr {
 .irs--shiny .irs-to, 
 .irs--shiny .irs-single,
 .irs-grid-text {
-  font-size: 12px;
-  line-height: 1;
+  font-size: 15px;
+  line-height: .9;
 }
 
 .irs--shiny .irs-bar {
@@ -113,4 +113,9 @@ input[type="radio"]:checked:before {
 input[type="radio"]:checked {
   border-color: #18bc9c;
   outline: none;
+}
+
+.radio-inline input[type="radio"] {
+  outline: none;
+  margin-top: 5px;
 }
