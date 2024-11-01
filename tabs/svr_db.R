@@ -325,7 +325,7 @@ observeEvent(input$select_ws, {
           nameGap = 35,
           splitLine = list(lineStyle = list(color = "#ecf0f1"))) %>%
         e_color(
-          c("#69d3bf", "#7bbce8")
+          c("#f7bf65", "#7bbce8")
         ) %>%
         e_text_style(
           color = "#2c3e50",
@@ -367,7 +367,7 @@ observeEvent(input$select_ws, {
           nameGap = 35,
           splitLine = list(lineStyle = list(color = "#ecf0f1"))) %>%
         e_color(
-          c("#69d3bf", "#7bbce8")
+          c("#f7bf65", "#7bbce8")
         ) %>%
         e_text_style(
           color = "#2c3e50",
@@ -409,7 +409,7 @@ observeEvent(input$select_ws, {
           nameGap = 35,
           splitLine = list(lineStyle = list(color = "#ecf0f1"))) %>%
         e_color(
-          c("#69d3bf", "#7bbce8")
+          c("#f7bf65", "#7bbce8")
         ) %>%
         e_text_style(
           color = "#2c3e50",
