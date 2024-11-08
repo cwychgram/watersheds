@@ -9,7 +9,7 @@ ui_db <- fluidPage(
                    width = "100%",
                    inline = TRUE),
       radioButtons("select_agro", 
-                   label = "Select an agroecology type:",
+                   label = "Select an agroecology zone type:",
                    choices = c("All", "Lowland", "Midland", "Highland"), 
                    selected = "All",
                    width = "100%",

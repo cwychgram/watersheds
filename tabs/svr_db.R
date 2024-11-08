@@ -339,7 +339,7 @@ observeEvent(input$select_ws, {
         e_legend(textStyle = list(color = "#2c3e50",
                                   fontFamily = "Gentona-Book",
                                   fontSize = 15)) %>%
-        e_grid(left = "20%") %>%
+        e_grid(left = "20%", right = "0%") %>%
         e_axis_pointer(lineStyle = list(color = "#bac4c5"))
     })
     output$plot_ndvi <- renderEcharts4r({
@@ -381,7 +381,7 @@ observeEvent(input$select_ws, {
         e_legend(textStyle = list(color = "#2c3e50",
                                   fontFamily = "Gentona-Book",
                                   fontSize = 15)) %>%
-        e_grid(left = "20%") %>%
+        e_grid(left = "20%", right = "0%") %>%
         e_axis_pointer(lineStyle = list(color = "#bac4c5"))
     })
     output$plot_rain <- renderEcharts4r({
@@ -423,7 +423,7 @@ observeEvent(input$select_ws, {
         e_legend(textStyle = list(color = "#2c3e50",
                                   fontFamily = "Gentona-Book",
                                   fontSize = 15)) %>%
-        e_grid(left = "20%") %>%
+        e_grid(left = "20%", right = "0%") %>%
         e_axis_pointer(lineStyle = list(color = "#bac4c5"))
     })
   } else {

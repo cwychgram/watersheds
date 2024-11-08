@@ -1,4 +1,6 @@
 source("tabs/ui_db.R", local = TRUE)
+source("tabs/ui_agro.R", local = TRUE)
+source("tabs/ui_about.R", local = TRUE)
 
 ui <- tagList(
   includeCSS("www/styles.css"),
@@ -13,7 +15,8 @@ ui <- tagList(
     title = "RFSA-JHU Watershed Project",
     collapsible = TRUE,
     fluid = TRUE,
-    tabPanel(title = "Dashboard", ui_db, value = "ui_db"),
+    tabPanel(title = "Watershed Plots", ui_db, value = "ui_db"),
+    tabPanel(title = "Agroecology Zone Plots", ui_agro, value = "ui_agro"),
     tabPanel(title = "About", value = "ui_about")
   )
 )
