@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+rsconnect/
 watersheds.Rproj
 data/archive
