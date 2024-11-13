@@ -23,16 +23,19 @@ ui_agro <- fluidPage(
       width = 9,
       fluidRow(
         h4(textOutput("agro_name")),
+        textOutput("agro_mo"),
         hr(),
         column(
           width = 6,
           h5("Vegetation"),
-          echarts4rOutput("plot_agro_veg")
+          echarts4rOutput("plot_agro_veg"),
+          textOutput("did_veg")
         ),
         column(
           width = 6,
           h5("NDVI"),
-          echarts4rOutput("plot_agro_ndvi")
+          echarts4rOutput("plot_agro_ndvi"),
+          textOutput("did_ndvi")
         )
       )
     )

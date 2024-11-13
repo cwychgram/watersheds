@@ -1,0 +1,13 @@
+ANALYSIS,AGRO,MONTH,DID
+Vegetation,Lowland,April,0.404
+Vegetation,Lowland,October,-4.136
+Vegetation,Midland,June,-9.657
+Vegetation,Midland,November,0.362
+Vegetation,Highland,June,1.792
+Vegetation,Highland,December,-18.408
+NDVI,Lowland,April,-0.008
+NDVI,Lowland,October,0.010
+NDVI,Midland,June,0.021
+NDVI,Midland,November,-0.081
+NDVI,Highland,June,0.146
+NDVI,Highland,December,0.008

@@ -78,31 +78,40 @@ observe({
 })
 
 observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
-  output$ws_name <- renderText({
+    output$ws_name <- renderText({
     if(input$select_ws != "No watersheds!") {
       if (input$select_ws == "Ali-Elemo (Chinakson)") {
-        paste("Chinakson Ali-Elemo (Learning - Midland)")
+        return("Chinakson Ali-Elemo")
       } else if (input$select_ws == "Ali-Elemo (Jarso)") {
-        paste("Jarso Ali-Elemo (Learning - Lowland)")
+        return("Jarso Ali-Elemo")
       } else if (input$select_ws == "Urji (Chinakson)") {
-        paste("Chinakson Urji (Learning - Midland)")
+        return("Chinakson Urji")
       } else if (input$select_ws == "Urji (Midhega Tola)") {
-        paste("Midhega Tola Urji (Control - Lowland)")
+        return("Midhega Tola Urji")
       } else {
         paste(ws$WOREDA[ws$WATERSHED == input$select_ws], 
               " ",
               input$select_ws,
-              " ",
-              "(",
-              ws$TYPE[ws$WATERSHED == input$select_ws],
-              " - ",
-              ws$AGRO[ws$WATERSHED == input$select_ws],
-              ")",
-              sep = ""
-        )
+              sep = "")
       }
     } else {
-      paste("No watershed selected.")
+      return("No watershed selected.")
+    }
+  })
+    output$ws_type_agro <- renderText({
+      if(input$select_ws != "No watersheds!") {
+        paste(ws$TYPE[ws$WATERSHED == input$select_ws],
+              " - ",
+              ws$AGRO[ws$WATERSHED == input$select_ws],
+              sep = ""
+        )
+      } else {
+      }
+    })
+  output$ws_area <- renderText({
+    if(input$select_ws != "No watersheds!") {
+      paste("Area: ", comma(round(ws$AREA_HA[ws$WATERSHED == input$select_ws], 2)), " ha", sep = "")
+    } else {
     }
   })
   if (input$select_ws == "No watersheds!") {

@@ -17,6 +17,6 @@ ui <- tagList(
     fluid = TRUE,
     tabPanel(title = "Watershed Plots", ui_db, value = "ui_db"),
     tabPanel(title = "Agroecology Zone Plots", ui_agro, value = "ui_agro"),
-    tabPanel(title = "About", value = "ui_about")
+    tabPanel(title = "About", ui_about, value = "ui_about")
   )
 )

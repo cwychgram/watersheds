@@ -16,7 +16,10 @@ observeEvent(input$select_agro_4agro, {
     )
   }
   output$agro_name <- renderText({
-    paste(input$select_agro_4agro, " (", input$select_mo_4agro, ")", sep = "")
+    return(input$select_agro_4agro)
+  })
+  output$agro_mo <- renderText({
+    return(input$select_mo_4agro)
   })
 })
 observeEvent(input$select_mo_4agro, {
@@ -126,5 +129,21 @@ observeEvent(input$select_mo_4agro, {
       e_mark_line(data = list(xAxis = "2022"), 
                   title = "Intervention Start Year",
                   lineStyle = list(color = "#69d3bf"))
+  })
+  output$did_veg <- renderText({
+    did_est <- did %>%
+      filter(ANALYSIS == "Vegetation",
+             AGRO == input$select_agro_4agro,
+             MONTH == input$select_mo_4agro
+             )
+    paste("Difference-in-difference estimator: ", did_est$DID, sep = "")
+  })
+  output$did_ndvi <- renderText({
+    did_est <- did %>%
+      filter(ANALYSIS == "NDVI",
+             AGRO == input$select_agro_4agro,
+             MONTH == input$select_mo_4agro
+      )
+    paste("Difference-in-difference estimator: ", did_est$DID, sep = "")
   })
 })

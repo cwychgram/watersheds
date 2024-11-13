@@ -16,6 +16,22 @@ h5 {
   font-size: 15px;
 }
 
+#ws_type_agro, 
+#ws_area,
+#agro_name,
+#agro_mo,
+#about_text {
+  font-weight: regular;
+  font-size: 17px;
+}
+
+#did_veg,
+#did_ndvi {
+  font-weight: regular;
+  font-size: 15px;
+  text-align: center;
+}
+
 .irs-grid-pol.small {
   height: 0px;
 }

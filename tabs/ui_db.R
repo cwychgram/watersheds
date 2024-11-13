@@ -54,6 +54,8 @@ ui_db <- fluidPage(
       width = 9,
       fluidRow(
         h4(textOutput("ws_name")),
+        textOutput("ws_type_agro"),
+        textOutput("ws_area"),
         hr(),
         column(
           width = 6,

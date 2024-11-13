@@ -3,6 +3,7 @@ library(echarts4r)
 library(leafem)
 library(leaflet)
 library(leaflet.extras)
+library(scales)
 library(sf)
 library(shiny)
 library(shinyjs)
@@ -30,3 +31,5 @@ df$WATERSHED[df$WATERSHED == "Ali-Elemo" & df$WOREDA == "Chinakson"] <- "Ali-Ele
 df$WATERSHED[df$WATERSHED == "Ali-Elemo" & df$WOREDA == "Jarso"] <- "Ali-Elemo (Jarso)"
 df$WATERSHED[df$WATERSHED == "Urji" & df$WOREDA == "Chinakson"] <- "Urji (Chinakson)"
 df$WATERSHED[df$WATERSHED == "Urji" & df$WOREDA == "Midhega Tola"] <- "Urji (Midhega Tola)"
+
+did <- read.csv("data/did_estimators.csv")
