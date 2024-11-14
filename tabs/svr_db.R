@@ -160,7 +160,7 @@ observeEvent(c(input$select_ws, input$select_mo, input$select_yr), {
       setView(
         lng, 
         lat,
-        zoom = 9
+        zoom = 10
         ) %>%
       addPolygons(
         data = ws2map,
