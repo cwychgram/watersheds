@@ -21,6 +21,9 @@ ws$WATERSHED[ws$WATERSHED == "Ali-Elemo" & ws$WOREDA == "Chinakson"] <- "Ali-Ele
 ws$WATERSHED[ws$WATERSHED == "Ali-Elemo" & ws$WOREDA == "Jarso"] <- "Ali-Elemo (Jarso)"
 ws$WATERSHED[ws$WATERSHED == "Urji" & ws$WOREDA == "Chinakson"] <- "Urji (Chinakson)"
 ws$WATERSHED[ws$WATERSHED == "Urji" & ws$WOREDA == "Midhega Tola"] <- "Urji (Midhega Tola)"
+ws$LABEL <- paste(ws$WOREDA, ws$WATERSHED, sep = " ")
+ws$LABEL <- str_replace_all(ws$LABEL, c(" (Chinakson)" = "", " (Jarso)" = "", " (Midhega Tola)" = ""))
+ws$LABEL <- str_replace(ws$LABEL, '\\s*[(][^)]+[)]', "")
 
 lc_filenames <- read.csv("data/lc_filenames.csv")
 
